@@ -1,9 +1,12 @@
 #
 # Copyright (c) 2008 Eric BREHAULT
 # contact: eric.brehault@makina-corpus.org
-#
+# (c) 2011 Christian Ledermann
+
 from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
+from OFS.PropertyManager import PropertyManager
+from browser import manage
 from zope.interface import implements
 from Products.PluginIndexes.common.util import parseIndexRequest
 from Products.PluginIndexes.interfaces import IPluggableIndex
@@ -34,8 +37,8 @@ def bboxAsTuple(geometry):
         return envelope.bounds
 
 
-class GeometryIndex(SimpleItem, BaseIndex):
-    """Index for geometry attribute provided by IWFSGeoItem adapter
+class GeometryIndex(SimpleItem, BaseIndex, PropertyManager):
+    """Index for geometry attribute provided by IGeoManager adapter
     """
     implements(IPluggableIndex, IUniqueValueIndex, ISortIndex)
 
@@ -43,11 +46,26 @@ class GeometryIndex(SimpleItem, BaseIndex):
 
     query_options = ('query','geometry_operator')
 
+    #manage_browse = DTMLFile('dtml/browseIndex', globals())
+
+    #manage_main = manage.CatalogManagement.__call__()
+
+    #manage_options= (
+    #    {'label': 'Settings',
+    #     'action': 'manage_main'},
+    #    {'label': 'Browse',
+    #     'action': 'manage_browse'},
+    #)
+
+
+
+
     def __init__(self, id):
         self.id = id
         BaseIndex.__init__(self)
         self.clear()
-        self.operators = ('equals', 'disjoint', 'intersects', 'touches', 'crosses', 'within', 'contains', 'overlaps')
+        self.operators = ('equals', 'disjoint', 'intersects', 'touches',
+                        'crosses', 'within', 'contains', 'overlaps')
         self.useOperator = 'within'
 
     def index_object(self, documentId, obj, threshold=None):
@@ -115,7 +133,7 @@ class GeometryIndex(SimpleItem, BaseIndex):
             raise RuntimeError,"operator not valid: %s" % operator
         if operator=='disjoint':
             raise RuntimeError,"DISJOINT not supported yet"
-
+        logger.info('Operator: %s' % operator)
 
         # we only process one key
         key = record.keys[0]
@@ -143,6 +161,8 @@ class GeometryIndex(SimpleItem, BaseIndex):
         """
         """
         self.clear()
+
+
 
 
 manage_addGeometryIndexForm = DTMLFile( 'dtml/addGeometryIndex', globals() )

@@ -2,12 +2,20 @@ import os
 import persistent
 from BTrees import IOBTree
 from rtree import Rtree
+from zope.interface import alsoProvides
+from interfaces import IGeometryCataloged
 
-try:
-    import zope.app.appsetup.product as zap
-    INDEX_DIR = zap.getProductConfiguration('collective.geo.index')['directory']
-except:
-    INDEX_DIR = os.environ['CLIENT_HOME']
+import logging
+logger = logging.getLogger('collective.geo.index')
+
+INDEX_DIR = os.path.join(os.path.split(os.environ['CLIENT_HOME'])[0],
+        'spatial-index')
+
+if not os.path.exists(INDEX_DIR):
+     os.mkdir(INDEX_DIR)
+
+#logger.info('Index directory: %s' % INDEX_DIR)
+
 
 class BaseIndex(persistent.Persistent):
 
@@ -15,6 +23,9 @@ class BaseIndex(persistent.Persistent):
         name = "rtree-%s" % hash(repr(self))
         self._basepath = os.path.sep.join([INDEX_DIR, name])
         self.clear()
+        #logger.info('Index created: %s' % self._basepath )
+        alsoProvides(self, IGeometryCataloged)
+
 
     def clear(self):
         self.backward = IOBTree.IOBTree()
