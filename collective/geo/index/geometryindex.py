@@ -18,12 +18,18 @@ from BTrees.IIBTree import IITreeSet
 
 from shapely import wkt
 from index import BaseIndex
+import ctypes
 
-#from zgeo.wfs.interfaces import IWFSGeoItem
 from collective.geo.contentlocations.interfaces import IGeoManager
 
 import logging
 logger = logging.getLogger('collective.geo.index')
+
+_marker = []
+
+OPERATORS = ('equals', 'disjoint', 'intersects', 'touches',
+            'crosses', 'within', 'contains', 'overlaps')
+
 
 def bboxAsTuple(geometry):
     """ return the geometry bbox as tuple
@@ -46,16 +52,16 @@ class GeometryIndex(SimpleItem, BaseIndex, PropertyManager):
 
     query_options = ('query','geometry_operator')
 
-    #manage_browse = DTMLFile('dtml/browseIndex', globals())
+    manage_browse = DTMLFile('dtml/browseGeometryIndex', globals())
 
-    #manage_main = manage.CatalogManagement.__call__()
+    manage_main = DTMLFile('dtml/manageGeometryIndex', globals())
 
-    #manage_options= (
-    #    {'label': 'Settings',
-    #     'action': 'manage_main'},
-    #    {'label': 'Browse',
-    #     'action': 'manage_browse'},
-    #)
+    manage_options= (
+        {'label': 'Settings',
+         'action': 'manage_main'},
+        {'label': 'Browse',
+         'action': 'manage_browse'},
+    )
 
 
 
@@ -64,12 +70,18 @@ class GeometryIndex(SimpleItem, BaseIndex, PropertyManager):
         self.id = id
         BaseIndex.__init__(self)
         self.clear()
-        self.operators = ('equals', 'disjoint', 'intersects', 'touches',
-                        'crosses', 'within', 'contains', 'overlaps')
+        self.operators = OPERATORS
         self.useOperator = 'within'
 
+    def getId(self):
+        return self.id
+
+
     def index_object(self, documentId, obj, threshold=None):
-        """Index an object.
+        """index an object, normalizing the indexed value to its bounds
+
+           o Objects which have 'None' as indexed value are *omitted*,
+             by design.
 
         'documentId' is the integer ID of the document.
         'obj' is the object to be indexed.
@@ -87,10 +99,10 @@ class GeometryIndex(SimpleItem, BaseIndex, PropertyManager):
             newValue = geoitem.wkt
             if newValue is callable:
                 newValue = newValue()
-            oldValue = self.backward.get(documentId, None )
+            oldValue = self.backward.get(documentId, _marker )
 
-            if newValue is None:
-                if oldValue is not None:
+            if newValue is _marker:
+                if oldValue is not _marker:
                     self.rtree.delete(documentId, wkt.loads(oldValue).bounds)
                     try:
                         del self.backward[documentId]
@@ -99,7 +111,7 @@ class GeometryIndex(SimpleItem, BaseIndex, PropertyManager):
                     except:
                         pass
             else:
-                if oldValue is not None and newValue!=oldValue:
+                if oldValue is not _marker and newValue!=oldValue:
                     self.rtree.delete(documentId, wkt.loads(oldValue).bounds)
                 if geometry:
                     self.rtree.add(documentId, geometry.bounds)
@@ -119,7 +131,13 @@ class GeometryIndex(SimpleItem, BaseIndex, PropertyManager):
             return
 
         self.rtree.delete(documentId, wkt.loads(datum).bounds)
-        del self.backward[ documentId ]
+        try:
+            del self.backward[ documentId ]
+        except ConflictError:
+            raise
+        except:
+            logger.debug('Attempt to unindex nonexistent document'
+                      ' with id %s' % documentId,exc_info=True)
 
     def _apply_index(self, request, cid='', type=type):
         """
@@ -140,11 +158,17 @@ class GeometryIndex(SimpleItem, BaseIndex, PropertyManager):
         bbox = [float(c) for c in key.split(',')] #bboxAsTuple(key)
         intersection=self.rtree.intersection(bbox)
         set = []
-        for d in [int(l) for l in intersection]:
+        for d in [l for l in intersection]:
             try:
-                geom_wkt = self.backward.get( d, None )
+                geom_wkt = self.backward.get( int(d), None )
             except:
-                logger.debug('backward.get failed for %i' %d)
+                # XXX I guess this has smthing to do with int and uint in c
+                logger.info('backward.get failed for %s : %s' %(str(d), str(int(d))))
+                #try:
+                #     i = int(ctypes.c_uint32(-d).value)
+                #     geom_wkt = self.backward.get( int(i), None )
+                #except:
+                #    logger.info('backward.get (2) failed for %s' % str(i))
                 continue
             if geom_wkt is not None:
                 geom = wkt.loads(geom_wkt)
@@ -152,7 +176,7 @@ class GeometryIndex(SimpleItem, BaseIndex, PropertyManager):
                     opr=getattr(geom, operator)
                     mp = MultiPoint([bbox[:2],bbox[2:]])
                     if opr(mp.envelope):
-                        set.append(d)
+                        set.append(int(d))
 
         r = IITreeSet(set)
         return r, (self.id,)

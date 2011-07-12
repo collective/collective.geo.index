@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  xmlns:zcml="http://namespaces.zope.org/zcml"
+  >
+
+
+  <browser:page
+    for="*"
+    name="query_spatialcatalog.html"
+    class=".query.SearchView"
+    template="query_form.pt"
+    permission="zope.Public"
+    />
+
+</configure>
