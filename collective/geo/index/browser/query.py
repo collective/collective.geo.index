@@ -4,13 +4,12 @@ from zope.publisher.browser import BrowserView
 from Products.CMFCore.utils import getToolByName
 from collective.geo.index.geometryindex import OPERATORS
 
+from collective.geo.kml.interfaces import IKMLOpenLayersView
+
 class ISearchView(Interface):
-
-    def num_items():
-        """Number of items in index."""
-
-    def searchResults(**searchterms):
-        """Return iterator over results."""
+    """
+    view interface
+    """
 
 
 class SearchView(BrowserView):
@@ -25,10 +24,6 @@ class SearchView(BrowserView):
     def portal_catalog(self):
         return getToolByName(self.context, 'portal_catalog')
 
-    def num_items(self):
-        """Number of items in index."""
-        self.update()
-        return len(self.index.backward)
 
     def parse_bbox(self, bbox=None):
         if bbox is None:
@@ -37,8 +32,5 @@ class SearchView(BrowserView):
             b = bbox
         return tuple(float(x) for x in b.split(','))
 
-    def searchResults(self, **searchterms):
-        """Just like a catalog search."""
-        self.update()
-        return self.portal_catalog(**searchterms)
+
 

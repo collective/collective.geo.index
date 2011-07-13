@@ -5,6 +5,7 @@
   xmlns:zcml="http://namespaces.zope.org/zcml"
   >
 
+  <include package="Products.CMFCore" file="permissions.zcml" />
 
   <browser:page
     for="*"
@@ -13,5 +14,24 @@
     template="query_form.pt"
     permission="zope.Public"
     />
+
+  <adapter
+      for=".query.ISearchView
+           zope.interface.Interface
+           zope.interface.Interface
+           zope.interface.Interface"
+      factory=".maplayer.KMLMapLayers"
+      />
+
+
+  <browser:page
+      for="*"
+      name="geometry_search.kml"
+      class=".kmlview.KmlView"
+      allowed_interface=".kmlview.IKmlView"
+      permission="zope2.View"
+      />
+
+
 
 </configure>
