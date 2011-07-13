@@ -18,7 +18,7 @@ from BTrees.IIBTree import IITreeSet
 
 from shapely import wkt
 from index import BaseIndex
-import ctypes
+#import ctypes
 
 from collective.geo.contentlocations.interfaces import IGeoManager
 
@@ -162,14 +162,16 @@ class GeometryIndex(SimpleItem, BaseIndex, PropertyManager):
             try:
                 geom_wkt = self.backward.get( int(d), None )
             except:
-                # XXX I guess this has smthing to do with int and uint in c
+                #XXX workaround for Rtree bug - waiting for a new release
                 logger.info('backward.get failed for %s : %s' %(str(d), str(int(d))))
                 #try:
-                #     i = int(ctypes.c_uint32(-d).value)
+                #     i = -int(ctypes.c_uint32(-d).value)
                 #     geom_wkt = self.backward.get( int(i), None )
+                #     logger.info('try backward.get for %s' % str(i))
                 #except:
                 #    logger.info('backward.get (2) failed for %s' % str(i))
                 continue
+
             if geom_wkt is not None:
                 geom = wkt.loads(geom_wkt)
                 if geom is not None:

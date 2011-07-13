@@ -42,7 +42,27 @@
             <script type="text/javascript">
 /*<![CDATA[*/
     $(document).ready(function() {
-        var map = cgmap.config['default-cgmap'].map;
+        function getQuerystring(key, default_)
+        {
+          if (default_==null) default_="";
+          key = key.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+          var regex = new RegExp("[\\?&]"+key+"=([^&#]*)");
+          var qs = regex.exec(window.location.href);
+          if(qs == null)
+            return default_;
+          else
+            return qs[1];
+        };
+        var bbox_value = getQuerystring('zgeo_geometry');
+        if (bbox_value.length > 8){
+            var bbox_values = bbox_value.split(',')
+            var map = cgmap.config['default-cgmap'].map;
+            var bounds = new OpenLayers.Bounds(bbox_values[0], bbox_values[1], bbox_values[2], bbox_values[3]);
+            var boxes = new OpenLayers.Layer.Boxes("Search in this bbox");
+            var box = new OpenLayers.Marker.Box(bounds.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()));
+            boxes.addMarker(box);
+            map.addLayer(boxes);
+        };
         var control = new OpenLayers.Control();
         OpenLayers.Util.extend(control, {
             draw: function () {
@@ -57,7 +77,7 @@
 
             notice: function (bounds) {
                 var ll = map.getLonLatFromPixel(new OpenLayers.Pixel(bounds.left, bounds.bottom)).transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
-                var ur = map.getLonLatFromPixel(new OpenLayers.Pixel(bounds.right, bounds.top)).transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));;
+                var ur = map.getLonLatFromPixel(new OpenLayers.Pixel(bounds.right, bounds.top)).transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
                 var input_string = ll.lon.toFixed(1) + "," + ll.lat.toFixed(1) + "," + ur.lon.toFixed(1) + "," + ur.lat.toFixed(1);
                 jQuery("input#zgeogeometryinput").val(input_string);
             }
@@ -87,6 +107,18 @@
                i18n:attributes="title title_search_title;"
                tal:attributes="value searchgeometry;"
                />
+
+        <input type="radio" name="zgeo_geometry_usage" value="geometry_operator:equals" /> equals
+        <input type="radio" name="zgeo_geometry_usage" value="geometry_operator:disjoint" /> disjoint
+        <input type="radio" name="zgeo_geometry_usage" value="geometry_operator:intersects" /> intersects
+        <input type="radio" name="zgeo_geometry_usage" value="geometry_operator:touches" /> touches
+        <input type="radio" name="zgeo_geometry_usage" value="geometry_operator:crosses" /> crosses
+        <input type="radio" name="zgeo_geometry_usage" value="geometry_operator:within" checked="checked"/> within
+        <input type="radio" name="zgeo_geometry_usage" value="geometry_operator:contains" /> contains
+        <input type="radio" name="zgeo_geometry_usage" value="geometry_operator:overlaps" /> overlaps
+
+        <br/>
+
         <input class="searchPage"
                name="SearchableText"
                type="text"

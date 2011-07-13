@@ -25,6 +25,12 @@ setup(name='collective.geo.index',
       install_requires=[
           'setuptools',
           # -*- Extra requirements: -*-
+          'Products.CMFPlone',
+          'shapely'
+          'Rtree',
+          'collective.geo.contentlocations',
+          'collective.geo.mapwidget',
+          'collective.geo.kml',
       ],
       entry_points="""
       # -*- Entry points: -*-

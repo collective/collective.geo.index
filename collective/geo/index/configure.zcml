@@ -2,9 +2,31 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
     i18n_domain="collective.geo.index">
 
   <five:registerPackage package="." initialize=".initialize" />
   <include package=".browser" />
+
+  <!-- Register the installation GenericSetup extension profile -->
+  <genericsetup:registerProfile
+      name="default"
+      title="collective.geo.index"
+      directory="profiles/default"
+      description="A spatial index for collective.geo"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+
+  <!-- Register the import step -->
+  <genericsetup:importStep
+      name="collective.geo.index"
+      title="collective.geo.index special import handlers"
+      description=""
+      handler="collective.geo.index.setuphandlers.setupVarious" />
+
+  <!-- Register the upgrade step -->
+
 
 </configure>

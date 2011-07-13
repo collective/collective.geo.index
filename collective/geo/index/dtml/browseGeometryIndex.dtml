@@ -4,7 +4,7 @@
 <dtml-call "REQUEST.RESPONSE.setHeader('Content-Type', 'text/html; charset=UTF-8')" >
 
 <p class="form-text">
-The index "&dtml-getId;" contains <dtml-var items fmt=collection-length thousands_commas> distinct values
+The index "&dtml-getId;" contains <dtml-var items fmt=collection-length thousands_commas> leaves
 </p>
 
 <dtml-let size="20"> <!-- batch size -->
