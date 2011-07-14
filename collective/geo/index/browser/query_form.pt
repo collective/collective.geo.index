@@ -79,7 +79,10 @@
                 var ll = map.getLonLatFromPixel(new OpenLayers.Pixel(bounds.left, bounds.bottom)).transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
                 var ur = map.getLonLatFromPixel(new OpenLayers.Pixel(bounds.right, bounds.top)).transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
                 var input_string = ll.lon.toFixed(1) + "," + ll.lat.toFixed(1) + "," + ur.lon.toFixed(1) + "," + ur.lat.toFixed(1);
-                jQuery("input#zgeogeometryinput").val(input_string);
+                var i = ll.lon.toFixed(1)
+                if ( !isNaN(i) ){
+                    jQuery("input#zgeogeometryinput").val(input_string);
+                };
             }
         });
 
