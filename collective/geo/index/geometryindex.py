@@ -187,7 +187,10 @@ class GeometryIndex(SimpleItem, BaseIndex, PropertyManager):
         """
         self.clear()
 
-
+    def uniqueValues(self):
+        """ Just a dummy to make ZCatalog/plan.py happy
+        """
+        return []
 
 
 manage_addGeometryIndexForm = DTMLFile( 'dtml/addGeometryIndex', globals() )
