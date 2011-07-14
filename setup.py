@@ -26,7 +26,7 @@ setup(name='collective.geo.index',
           'setuptools',
           # -*- Extra requirements: -*-
           'Products.CMFPlone',
-          'shapely'
+          'shapely',
           'Rtree',
           'collective.geo.contentlocations',
           'collective.geo.mapwidget',
