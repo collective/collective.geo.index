@@ -6,7 +6,6 @@
 from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
 from OFS.PropertyManager import PropertyManager
-from browser import manage
 from zope.interface import implements
 from Products.PluginIndexes.common.util import parseIndexRequest
 from Products.PluginIndexes.interfaces import IPluggableIndex
