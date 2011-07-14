@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
 from Products.CMFCore.utils import getToolByName
-from Products.CMFEditions.setuphandlers import DEFAULT_POLICIES
 # The profile id of your package:
 PROFILE_ID = 'profile-collective.geo.index:default'
 
