@@ -26,13 +26,15 @@ class BaseIndex(persistent.Persistent):
         return len(self.backward)
 
     def indexSize(self):
-        """Return the size of the index in terms of distinct leaves."""
-        try:
-            if self.rtree:
-                if self.rtree.leaves():
+        """Return the size of the index """
+        if len(self.backward) > 1:
+            try:
+                if self.rtree:
                     return len(self.rtree.leaves())
-        except:
-            return
+            except:
+                return
+        else:
+            return 0
 
     def clear(self):
         """ Complete reset """
@@ -48,11 +50,12 @@ class BaseIndex(persistent.Persistent):
 
     def items(self):
         items = []
-        for i,v,k in self.rtree.leaves():
-            if isinstance(v, int):
-                v = IISet((v,))
-            items.append((k, list(set(v))))
-        return items
+        if len(self.backward) >0:
+            for i,v,k in self.rtree.leaves():
+                if isinstance(v, int):
+                    v = IISet((v,))
+                items.append((k, list(set(v))))
+            return items
 
 
     @property
