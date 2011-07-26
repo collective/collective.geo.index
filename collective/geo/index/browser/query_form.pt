@@ -42,26 +42,21 @@
             <script type="text/javascript">
 /*<![CDATA[*/
     $(document).ready(function() {
-        function getQuerystring(key, default_)
-        {
-          if (default_==null) default_="";
-          key = key.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
-          var regex = new RegExp("[\\?&]"+key+"=([^&#]*)");
-          var qs = regex.exec(window.location.href);
-          if(qs == null)
-            return default_;
-          else
-            return qs[1];
-        };
-        var bbox_value = getQuerystring('zgeo_geometry');
+        var map = cgmap.config['default-cgmap'].map;
+
+        /* The bounding box value is rendered out into the input element from
+           the request */
+        var bbox_value = jQuery("input#zgeogeometryinput").val();
         if (bbox_value.length > 8){
             var bbox_values = bbox_value.split(',')
-            var map = cgmap.config['default-cgmap'].map;
             var bounds = new OpenLayers.Bounds(bbox_values[0], bbox_values[1], bbox_values[2], bbox_values[3]);
+            console.log(bbox_values);
             var boxes = new OpenLayers.Layer.Boxes("Search in this bbox");
-            var box = new OpenLayers.Marker.Box(bounds.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()));
+            var projected_bounds = bounds.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+            var box = new OpenLayers.Marker.Box(projected_bounds);
             boxes.addMarker(box);
             map.addLayer(boxes);
+            map.zoomToExtent(projected_bounds);
         };
         var control = new OpenLayers.Control();
         OpenLayers.Util.extend(control, {
@@ -85,7 +80,6 @@
                 };
             }
         });
-
 
         map.addControl(control);
 

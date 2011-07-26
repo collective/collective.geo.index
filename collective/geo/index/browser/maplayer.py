@@ -25,8 +25,8 @@ class KMLMapLayer(MapLayer):
         function() { return new OpenLayers.Layer.GML('%s', '%s' + '@@geometry_search.kml?%s',
             { format: OpenLayers.Format.KML,
               eventListeners: { 'loadend': function(event) {
-                                 var extent = this.getDataExtent();
-                                 this.map.zoomToExtent(extent);
+                                     //Map zooms to bounding box rather
+                                     //than results layer.
                                 }
                             },
               projection: cgmap.createDefaultOptions().displayProjection,

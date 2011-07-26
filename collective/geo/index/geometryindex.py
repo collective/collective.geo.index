@@ -73,7 +73,14 @@ class GeometryIndex(SimpleItem, BaseIndex, PropertyManager):
         self.useOperator = 'within'
 
     def getId(self):
+        """See IPluggableIndex.
+        """
         return self.id
+
+    def getEntryForObject(self, documentId, default=None):
+        """ See IPluggableIndex
+        """
+        return self.backward.get(documentId, default)
 
 
     def index_object(self, documentId, obj, threshold=None):

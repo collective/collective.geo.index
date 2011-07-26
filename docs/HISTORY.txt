@@ -4,4 +4,16 @@ Changelog
 0.1dev (unreleased)
 -------------------
 
+- Use jQuery to pick up the query's bounding box from the form input (rendered
+  and escaped with Plone already) rather than regex'ing the query string.
+  [davidjb]
+- Add getEntryForObject method for spatial catalog index to allow viewing
+  ZCatalog records.
+  [davidjb]
+- Unescape the URL-encoded geometry parameter in the search query view to
+  allow bounding box to load correctly.
+  [davidjb]
+- Zoom to bounding box extent on load, rather than the extent of data from
+  the query.
+  [davidjb]
 - Initial release
