@@ -10,9 +10,6 @@ Changelog
 - Add getEntryForObject method for spatial catalog index to allow viewing
   ZCatalog records.
   [davidjb]
-- Unescape the URL-encoded geometry parameter in the search query view to
-  allow bounding box to load correctly.
-  [davidjb]
 - Zoom to bounding box extent on load, rather than the extent of data from
   the query.
   [davidjb]
