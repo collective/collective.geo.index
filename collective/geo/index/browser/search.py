@@ -154,7 +154,6 @@ def get_query_results(context, query, show_query, use_types_blacklist=False,
             if use_navigation_root:
                 rootAtNavigationRoot(query, context)
             query['show_inactive'] = show_inactive
-            print query
             results = catalog(**query)
         except ParseError:
             pass
