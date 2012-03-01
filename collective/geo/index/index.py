@@ -27,6 +27,7 @@ class BaseIndex(persistent.Persistent):
 
     def indexSize(self):
         """Return the size of the index """
+        return 0
         if len(self.backward) > 1:
             try:
                 if self.rtree:

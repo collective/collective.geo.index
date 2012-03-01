@@ -41,7 +41,8 @@
                 src="++resource++geo.kml.javascripts/kml_openlayers.js"></script>
             <script type="text/javascript">
 /*<![CDATA[*/
-    $(document).ready(function() {
+(function($) {
+    $(window).bind("load", function() {
         var map = cgmap.config['default-cgmap'].map;
 
         /* The bounding box value is rendered out into the input element from
@@ -83,7 +84,8 @@
 
         map.addControl(control);
 
-});
+    });
+  })(jQuery);
 /*]]>*/
             </script>
 

@@ -157,7 +157,7 @@ class GeometryIndex(SimpleItem, BaseIndex, PropertyManager):
             raise RuntimeError,"operator not valid: %s" % operator
         if operator=='disjoint':
             raise RuntimeError,"DISJOINT not supported yet"
-        logger.info('Operator: %s' % operator)
+        logger.debug('Operator: %s' % operator)
 
         # we only process one key
         key = record.keys[0]
@@ -168,14 +168,7 @@ class GeometryIndex(SimpleItem, BaseIndex, PropertyManager):
             try:
                 geom_wkt = self.backward.get( int(d), None )
             except:
-                #XXX workaround for Rtree bug - waiting for a new release
                 logger.info('backward.get failed for %s : %s' %(str(d), str(int(d))))
-                #try:
-                #     i = -int(ctypes.c_uint32(-d).value)
-                #     geom_wkt = self.backward.get( int(i), None )
-                #     logger.info('try backward.get for %s' % str(i))
-                #except:
-                #    logger.info('backward.get (2) failed for %s' % str(i))
                 continue
 
             if geom_wkt is not None:

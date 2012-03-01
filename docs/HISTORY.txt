@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.1dev (unreleased)
+0.1 (2012/02/16)
 -------------------
 
 - Use jQuery to pick up the query's bounding box from the form input (rendered
