@@ -51,9 +51,10 @@
         if (bbox_value.length > 8){
             var bbox_values = bbox_value.split(',')
             var bounds = new OpenLayers.Bounds(bbox_values[0], bbox_values[1], bbox_values[2], bbox_values[3]);
-            console.log(bbox_values);
             var boxes = new OpenLayers.Layer.Boxes("Search in this bbox");
-            var projected_bounds = bounds.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+            var projection_object = map.getProjectionObject();
+            var from = new OpenLayers.Projection("EPSG:4326");
+            var projected_bounds = bounds.transform(from, projection_object);
             var box = new OpenLayers.Marker.Box(projected_bounds);
             boxes.addMarker(box);
             map.addLayer(boxes);
