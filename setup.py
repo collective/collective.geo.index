@@ -6,7 +6,7 @@ version = '0.1'
 setup(name='collective.geo.index',
       version=version,
       description="spatialindex for collective.geo",
-      long_description=open("README.txt").read() + "\n" +
+      long_description=open("README.rst").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
@@ -22,8 +22,8 @@ setup(name='collective.geo.index',
         "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
         ],
       keywords='',
-      author='',
-      author_email='',
+      author='Christian Ledermann',
+      author_email='christian.ledermann@gmail.com',
       url='http://plone.org/products/collective.geo.index/',
       license='GPL',
       packages=find_packages(exclude=['ez_setup']),
