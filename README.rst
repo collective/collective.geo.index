@@ -15,7 +15,7 @@ http://trac.gispython.org/lab/wiki/Rtree.
 Links
 =====
 
-- Code repository: http://svn.plone.org/svn/collective/collective.geo.index/
+- Code repository: https://github.com/collective/collective.geo.index
 - Questions and comments to collectivegeo-discussion@lists.coactivate.org
-- Report bugs at http://plone.org/products/collective.geo.index/issues
+- Report bugs at https://github.com/collective/collective.geo.index/issues
 
