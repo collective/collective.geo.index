@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
       lang="en"
       metal:use-macro="here/main_template/macros/master"
-      i18n:domain="collective.geo.file">
+      i18n:domain="collective.geo.index">
 <head>
     <metal:javascript_head fill-slot="javascript_head_slot">
       <metal:use use-macro="context/@@collectivegeo-macros/openlayers" />
@@ -79,6 +79,18 @@
                 var i = ll.lon.toFixed(1)
                 if ( !isNaN(i) ){
                     jQuery("input#zgeogeometryinput").val(input_string);
+                    var bounds = new OpenLayers.Bounds(ll.lon.toFixed(5), ll.lat.toFixed(5), ur.lon.toFixed(5),ur.lat.toFixed(5));
+                    var projection_object = map.getProjectionObject();
+                    var from = new OpenLayers.Projection("EPSG:4326");
+                    var projected_bounds = bounds.transform(from, projection_object);
+                    if (boxes.markers.length > 0){
+                        var box = boxes.markers[0];
+                        box.bounds = projected_bounds;
+                    } else {
+                        var box = new OpenLayers.Marker.Box(projected_bounds);
+                        boxes.addMarker(box);
+                    };
+                    map.zoomToExtent(projected_bounds);
                 };
             }
         });
@@ -104,16 +116,22 @@
                size="25"
                tal:attributes="value searchgeometry;"
                />
-
-        <input type="radio" name="zgeo_geometry_usage" value="geometry_operator:equals" /> equals
-        <input type="radio" name="zgeo_geometry_usage" value="geometry_operator:disjoint" /> disjoint
-        <input type="radio" name="zgeo_geometry_usage" value="geometry_operator:intersects" /> intersects
-        <input type="radio" name="zgeo_geometry_usage" value="geometry_operator:touches" /> touches
-        <input type="radio" name="zgeo_geometry_usage" value="geometry_operator:crosses" /> crosses
-        <input type="radio" name="zgeo_geometry_usage" value="geometry_operator:within" checked="checked"/> within
-        <input type="radio" name="zgeo_geometry_usage" value="geometry_operator:contains" /> contains
-        <input type="radio" name="zgeo_geometry_usage" value="geometry_operator:overlaps" /> overlaps
-
+        <input id="geom_equals" type="radio" name="zgeo_geometry_usage" value="geometry_operator:equals" />
+        <label for="geom_equals" i18n:domain="collective.geo.index" i18n:translate="">equals</label>
+        <input id="geom_disjoint" type="radio" name="zgeo_geometry_usage" value="geometry_operator:disjoint" />
+        <label for="geom_disjoint" i18n:domain="collective.geo.index" i18n:translate="">disjoint</label>
+        <input id="geom_intersects" type="radio" name="zgeo_geometry_usage" value="geometry_operator:intersects" />
+        <label for="geom_intersects" i18n:domain="collective.geo.index" i18n:translate="">intersects</label>
+        <input id="geom_touches" type="radio" name="zgeo_geometry_usage" value="geometry_operator:touches" />
+        <label for="geom_touches" i18n:domain="collective.geo.index" i18n:translate="">touches</label>
+        <input id="geom_crosses" type="radio" name="zgeo_geometry_usage" value="geometry_operator:crosses" />
+        <label for="geom_crosses" i18n:domain="collective.geo.index" i18n:translate="">crosses</label>
+        <input id="geom_within" type="radio" name="zgeo_geometry_usage" value="geometry_operator:within" checked="checked"/>
+        <label for="geom_within"  i18n:domain="collective.geo.index" i18n:translate="">within</label>
+        <input id="geom_contains" type="radio" name="zgeo_geometry_usage" value="geometry_operator:contains" />
+        <label for="geom_contains" i18n:domain="collective.geo.index" i18n:translate="">contains</label>
+        <input id="geom_overlaps" type="radio" name="zgeo_geometry_usage" value="geometry_operator:overlaps" />
+        <label for="geom_overlaps" i18n:domain="collective.geo.index" i18n:translate="">overlaps</label>
         <br/>
 
         <input class="xsearchPage"
