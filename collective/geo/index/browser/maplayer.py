@@ -21,20 +21,23 @@ class KMLMapLayer(MapLayer):
 
         query, show = build_query(self.context, self.request)
         query_string = ZTUtils.make_query(query)
-        return"""
-        function() { return new OpenLayers.Layer.GML('%s', '%s' + '@@geometry_search.kml?%s',
-            { format: OpenLayers.Format.KML,
-              eventListeners: { 'loadend': function(event) {
-                                     //Map zooms to bounding box rather
-                                     //than results layer.
-                                }
-                            },
-              projection: cgmap.createDefaultOptions().displayProjection,
-              formatOptions: {
-                  extractStyles: true,
-                  extractAttributes: true }
-            });}""" % ('search results',
+        #return ''
+        return u"""
+        function() {
+                return new OpenLayers.Layer.Vector("%s", {
+                    protocol: new OpenLayers.Protocol.HTTP({
+                      url: "%s@@geometry_search.kml?%s",
+                      format: new OpenLayers.Format.KML({
+                        extractStyles: true,
+                        extractAttributes: true})
+                      }),
+                    strategies: [new OpenLayers.Strategy.Fixed()],
+                    visibility: true,
+                    projection: cgmap.createDefaultOptions().displayProjection
+                  });
+                } """ % (self.context.Title().replace("'", "&apos;"),
                         context_url, query_string)
+
 
 
 class KMLMapLayers(MapLayers):

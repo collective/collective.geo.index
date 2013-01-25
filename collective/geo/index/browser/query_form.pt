@@ -31,7 +31,7 @@
                  is_advanced_search request/form/advanced_search|nothing;
                  advanced_search_url string:${context/@@plone_portal_state/navigation_root_url}/search_form;
                  searchterm request/SearchableText|nothing;
-                 searchgeometry request/zgeo_geometry|string:-180,-90,180,90;">
+                 searchgeometry request/zgeo_geometry|string:-179.999,-89.999,179.999,89.999;">
 
     <div id="content-core">
 
@@ -42,22 +42,22 @@
             <script type="text/javascript">
 /*<![CDATA[*/
 (function($) {
-    $(window).bind("load", function() {
+    $(window).bind("map-load", function() {
         var map = cgmap.config['default-cgmap'].map;
 
         /* The bounding box value is rendered out into the input element from
            the request */
         var bbox_value = jQuery("input#zgeogeometryinput").val();
+        var boxes = new OpenLayers.Layer.Boxes("Search in this bbox");
+        map.addLayer(boxes);
         if (bbox_value.length > 8){
             var bbox_values = bbox_value.split(',')
             var bounds = new OpenLayers.Bounds(bbox_values[0], bbox_values[1], bbox_values[2], bbox_values[3]);
-            var boxes = new OpenLayers.Layer.Boxes("Search in this bbox");
             var projection_object = map.getProjectionObject();
             var from = new OpenLayers.Projection("EPSG:4326");
             var projected_bounds = bounds.transform(from, projection_object);
             var box = new OpenLayers.Marker.Box(projected_bounds);
             boxes.addMarker(box);
-            map.addLayer(boxes);
             map.zoomToExtent(projected_bounds);
         };
         var control = new OpenLayers.Control();
@@ -75,7 +75,7 @@
             notice: function (bounds) {
                 var ll = map.getLonLatFromPixel(new OpenLayers.Pixel(bounds.left, bounds.bottom)).transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
                 var ur = map.getLonLatFromPixel(new OpenLayers.Pixel(bounds.right, bounds.top)).transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
-                var input_string = ll.lon.toFixed(1) + "," + ll.lat.toFixed(1) + "," + ur.lon.toFixed(1) + "," + ur.lat.toFixed(1);
+                var input_string = ll.lon.toFixed(5) + "," + ll.lat.toFixed(5) + "," + ur.lon.toFixed(5) + "," + ur.lat.toFixed(5);
                 var i = ll.lon.toFixed(1)
                 if ( !isNaN(i) ){
                     jQuery("input#zgeogeometryinput").val(input_string);
@@ -93,18 +93,15 @@
 
         </div>
     <br/>
-    <form name="searchform"
-          action="query_spatialcatalog.html"
-          class="searchPage"
-          tal:condition="not:is_advanced_search">
+    <form name="xsearchform"
+          action="@@query_spatialcatalog.html"
+          class="xsearchPage">
 
         <input
                name="zgeo_geometry"
                id="zgeogeometryinput"
-               type="text"
+               type="hidden"
                size="25"
-               title="Search Site"
-               i18n:attributes="title title_search_title;"
                tal:attributes="value searchgeometry;"
                />
 
@@ -119,7 +116,7 @@
 
         <br/>
 
-        <input class="searchPage"
+        <input class="xsearchPage"
                name="SearchableText"
                type="text"
                size="25"
@@ -127,7 +124,7 @@
                i18n:attributes="title title_search_title;"
                tal:attributes="value searchterm;"
                />
-        <input class="searchPage searchButton"
+        <input class="xsearchPage xsearchButton"
                type="submit"
                value="Search"
                i18n:attributes="value label_search;"/>

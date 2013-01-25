@@ -167,7 +167,6 @@ def query_catalog(context, request, show_all=False, quote_logic=False,
                     use_navigation_root=False):
 
     query, show_query = build_query(context, request, show_all, quote_logic, quote_logic_indexes)
-
     return get_query_results(context, query, show_query, use_types_blacklist,
                             show_inactive, use_navigation_root)
 

@@ -1,5 +1,9 @@
 Changelog
 =========
+0.2 (unreleased)
+-----------------
+
+- support for collective.geo 2.5
 
 0.1 (2012/02/16)
 -------------------

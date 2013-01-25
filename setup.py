@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.1'
+version = '0.2'
 
 setup(name='collective.geo.index',
       version=version,
-      description="spatialindex for collective.geo",
+      description="Spatialindex for collective.geo",
       long_description=open("README.rst").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -16,6 +16,7 @@ setup(name='collective.geo.index',
         "Framework :: Plone",
         "Framework :: Plone :: 4.0",
         "Framework :: Plone :: 4.1",
+        "Framework :: Plone :: 4.2",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Topic :: Scientific/Engineering :: GIS",

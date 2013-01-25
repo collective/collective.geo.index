@@ -12,7 +12,7 @@
   <!-- Register the installation GenericSetup extension profile -->
   <genericsetup:registerProfile
       name="default"
-      title="collective.geo.index"
+      title="Collective Geo Index"
       directory="profiles/default"
       description="A spatial index for collective.geo"
       provides="Products.GenericSetup.interfaces.EXTENSION"
